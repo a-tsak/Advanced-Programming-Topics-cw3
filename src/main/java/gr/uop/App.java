@@ -1,8 +1,7 @@
 package gr.uop;
 
 import java.util.List;
-
-
+import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -171,13 +170,6 @@ private int maxCharacters = 160;
             addRecipients.getDialogPane().setContent(dItems);
             addRecipients.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-
-
-
-
-            addRecipients.show();
-
-
             //Add and remove button functions
             dAdd.setOnAction(new EventHandler<ActionEvent>() {              //Custom local event handler (Didn't work otherwise)
 
@@ -253,6 +245,37 @@ private int maxCharacters = 160;
 
 
 
+            addRecipients.setResultConverter((button) -> {
+                // Αν πατηθεί το OK, επιστρέφουμε την αριθμητική τιμή (εφόσον είναι δυνατό)
+                if (button == ButtonType.OK) {
+                    try {
+                        return listToString(itemsRight.getItems());
+                    }
+                    catch (NumberFormatException ex) {
+                        return null;
+                    }
+                }
+                // Σε διαφορετική περίπτωση (Cancel ή κλείσιμο) επιστρέφουμε null, που αντιστοιχεί σε απουσία αποτελέσματος στο Optional<>
+                else {
+                    return null;
+                }
+            });
+
+
+
+            Optional<String> result = addRecipients.showAndWait();
+            if (result.isPresent()) {
+                numbers.setText(result.get());
+            }
+            
+
+
+
+
+            
+
+
+
         });
 
         
@@ -324,10 +347,17 @@ private int maxCharacters = 160;
 
 
     public String listToString(ObservableList<String> list){                            //Takes a list of numbers and converts it to a string ;number;number;
-        String numbers = ";";
-
+        String numbers = "";
+        int i=1; //a counter to determine the last item
         for (String item : list) {
-            numbers += item + ";";
+            if(i<list.size()){
+                numbers += item + ";";
+            }
+            else{
+                numbers += item ;
+            }
+            i++;
+            
         }
 
 
