@@ -2,8 +2,13 @@ package gr.uop;
 
 import java.util.List;
 
+
+
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -113,6 +118,8 @@ private int maxCharacters = 160;
 
 
         //Functionalities
+
+
         addButton.setOnAction((e)->{
             Dialog<String> addRecipients = new Dialog<>();
             //Making 2 observable lists and filling the left one with random numbers
@@ -121,7 +128,11 @@ private int maxCharacters = 160;
         
 
             leftList = randomPhones(leftList);    //Filling the left list with random phones
+            rightList= stringToList(numbers.getText());
     
+
+
+
             //Dialog options
             addRecipients.initModality(Modality.WINDOW_MODAL);
             addRecipients.initOwner(stage);
@@ -143,6 +154,8 @@ private int maxCharacters = 160;
             dAdd.setPrefWidth(100);
             dRemove.setPrefWidth(100);
             dButtons.getChildren().addAll(dAdd,dRemove);
+            dAdd.setDisable(true);
+            dRemove.setDisable(true);
 
             //A HBox with the lists and the buttons
             HBox dItems = new HBox(5);
@@ -155,8 +168,50 @@ private int maxCharacters = 160;
             addRecipients.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
 
+
+            
+
+
             addRecipients.show();
+
+        
+            //2 list listeners so that if no item is selected the button gets disabled
+            itemsLeft.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<String>() {                     
+
+                @Override
+                public void onChanged(Change<? extends String> c) {
+                    if(c!=null){
+                        dAdd.setDisable(false);
+                    }
+                    else{
+                        dAdd.setDisable(true);
+                    }
+                    
+                }
+                
+            });
+
+
+            itemsRight.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<String>() {
+
+                @Override
+                public void onChanged(Change<? extends String> c) {
+                    if(c!=null){
+                        dRemove.setDisable(false);
+                    }
+                    else{
+                        dRemove.setDisable(true);
+                    }
+                    
+                }
+                
+            });
+
+
+
         });
+
+        
 
 
 
@@ -224,7 +279,36 @@ private int maxCharacters = 160;
 
 
 
+    public String listToString(ObservableList<String> list){                            //Takes a list of numbers and converts it to a string ;number;number;
+        String numbers = ";";
 
+        for (String item : list) {
+            numbers += item + ";";
+        }
+
+
+        return numbers;
+    }
+
+
+
+    public ObservableList<String> stringToList(String phones){            //A function that takes a string and extracts phones to a list
+        ObservableList<String> list = FXCollections.observableArrayList();
+        String[] array;
+
+        array = phones.split(";");
+        
+        for(String phone: array){
+            if(!phone.isBlank()){
+                list.add(phone);
+            }
+
+        }
+
+
+
+        return list;
+    }
 
 
 
