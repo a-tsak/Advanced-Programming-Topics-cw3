@@ -10,6 +10,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -157,6 +159,8 @@ private int maxCharacters = 160;
             dAdd.setDisable(true);
             dRemove.setDisable(true);
 
+
+
             //A HBox with the lists and the buttons
             HBox dItems = new HBox(5);
             dItems.setPadding(new Insets(5, 10, 10, 10));
@@ -169,10 +173,50 @@ private int maxCharacters = 160;
 
 
 
-            
 
 
             addRecipients.show();
+
+
+            //Add and remove button functions
+            dAdd.setOnAction(new EventHandler<ActionEvent>() {              //Custom local event handler (Didn't work otherwise)
+
+                @Override
+                public void handle(ActionEvent event) {             
+                    
+                            
+                    itemsRight.getItems().addAll(itemsLeft.getSelectionModel().getSelectedItems());     //First adds the items to the second list
+               
+                    itemsLeft.getItems().removeAll(itemsLeft.getSelectionModel().getSelectedItems());    //Then removes them from the first list
+
+                    itemsLeft.getSelectionModel().clearSelection();                 //Clears selection 
+                    
+                    dAdd.setDisable(true);
+                    
+                }
+                
+            });
+
+
+            dRemove.setOnAction(new EventHandler<ActionEvent>() {              //Custom local event handler (Didn't work otherwise)
+
+                @Override
+                public void handle(ActionEvent event1) {            
+                    
+                            
+                    itemsLeft.getItems().addAll(itemsRight.getSelectionModel().getSelectedItems());      //First adds the items to the first list    
+           
+                    itemsRight.getItems().removeAll(itemsRight.getSelectionModel().getSelectedItems());  //Then removes them from the second list
+    
+                   
+
+                    itemsRight.getSelectionModel().clearSelection();                 //Clears selection 
+                    
+                    dRemove.setDisable(true);
+                    
+                }
+                
+            });
 
         
             //2 list listeners so that if no item is selected the button gets disabled
@@ -212,7 +256,7 @@ private int maxCharacters = 160;
         });
 
         
-
+        
 
 
 
@@ -309,6 +353,13 @@ private int maxCharacters = 160;
 
         return list;
     }
+
+
+
+
+    
+
+
 
 
 
