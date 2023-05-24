@@ -233,6 +233,33 @@ public class App extends Application {
 
                 alert.show();
             }
+
+            if (message.getText().isEmpty()) {
+                Alert alert = new Alert(AlertType.CONFIRMATION);
+
+                alert.setTitle("Confirmation");
+                alert.setContentText("There is no text in the message. Do you want to proceed?");
+                alert.setHeaderText("The message is empty");
+
+                alert.initModality(Modality.WINDOW_MODAL);
+
+                alert.initOwner(stage);
+
+                // alert.initStyle(StageStyle.DECORATED);
+                alert.getButtonTypes().clear(); // Removing "Confirm" and "Close" buttons which Confirmation Alert by
+                                                // default has
+                alert.getButtonTypes().add(ButtonType.YES);
+                alert.getButtonTypes().add(ButtonType.NO);
+
+                // alert.show();
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.YES) {
+                    System.out.println("Yes");
+                } else if (result.get() == ButtonType.NO) {
+                    System.out.println("No");
+                }
+            }
+
         });
 
         // The VBox containing all the items
