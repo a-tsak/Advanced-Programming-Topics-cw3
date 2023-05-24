@@ -36,276 +36,210 @@ import javafx.stage.StageStyle;
  * JavaFX App
  */
 public class App extends Application {
-private int maxCharacters = 160;
-
-
-    
-
-
-
-
-
-
-
-
-
-
+    private int maxCharacters = 160;
 
     @Override
     public void start(Stage stage) {
-        
 
-
-
-
-
-
-
-
-
-
-        //The first HBox containing the receiver textfield and the add button
-        HBox top = new HBox(5); 
+        // The first HBox containing the receiver textfield and the add button
+        HBox top = new HBox(5);
         top.setAlignment(Pos.CENTER);
         HBox.setHgrow(top, Priority.ALWAYS);
 
-        Label label = new Label("To:");     //The label
+        Label label = new Label("To:"); // The label
         label.setMinWidth(20);
 
-        TextField numbers = new TextField();    //The number textfield
+        TextField numbers = new TextField(); // The number textfield
         numbers.setPromptText("Type numbers separated with ';'");
         numbers.setPrefWidth(1920);
-        
 
-        Button addButton = new Button("Add...");    //The add button
+        Button addButton = new Button("Add..."); // The add button
         addButton.setMinWidth(50);
 
-        top.getChildren().addAll(label,numbers,addButton);
+        top.getChildren().addAll(label, numbers, addButton);
 
-
-
-
-
-
-        //The center message textfield
-
-
+        // The center message textfield
 
         TextField message = new TextField();
         message.setPromptText("Type message text.");
         message.setAlignment(Pos.TOP_LEFT);
         message.setPrefSize(1920, 1080);
 
-
-
-
-        //The bottom send button
+        // The bottom send button
         Button sendButton = new Button("Send");
-        
+
         sendButton.setPrefWidth(1920);
         sendButton.setAlignment(Pos.CENTER);
 
-
-
-
-        //The bottom charcount labels
+        // The bottom charcount labels
         Label charcountLabel = new Label("0");
-        Label maxcharLabel = new Label("/"+maxCharacters);
-        HBox labelBox = new HBox(5);                    //a HBox containing the labels
-        labelBox.getChildren().addAll(charcountLabel,maxcharLabel);
+        Label maxcharLabel = new Label("/" + maxCharacters);
+        HBox labelBox = new HBox(5); // a HBox containing the labels
+        labelBox.getChildren().addAll(charcountLabel, maxcharLabel);
         labelBox.setAlignment(Pos.CENTER_RIGHT);
 
+        // Functionalities
 
-
-
-        //Functionalities
-
-
-        addButton.setOnAction((e)->{
+        addButton.setOnAction((e) -> {
             Dialog<String> addRecipients = new Dialog<>();
-            //Making 2 observable lists and filling the left one with random numbers
-            ObservableList<String> leftList = FXCollections.observableArrayList(); 
-            ObservableList<String> rightList = FXCollections.observableArrayList(); 
-        
+            // Making 2 observable lists and filling the left one with random numbers
+            ObservableList<String> leftList = FXCollections.observableArrayList();
+            ObservableList<String> rightList = FXCollections.observableArrayList();
 
-            leftList = randomPhones(leftList);    //Filling the left list with random phones
-            rightList= stringToList(numbers.getText());
-    
+            leftList = randomPhones(leftList); // Filling the left list with random phones
+            rightList = stringToList(numbers.getText());
 
-
-
-            //Dialog options
+            // Dialog options
             addRecipients.initModality(Modality.WINDOW_MODAL);
             addRecipients.initOwner(stage);
             addRecipients.setTitle("Add recipients");
-            //the 2 lists
+            // the 2 lists
             ListView<String> itemsLeft = new ListView<String>(leftList);
             ListView<String> itemsRight = new ListView<String>(rightList);
             itemsLeft.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             itemsRight.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-            itemsLeft.setPrefSize(250,350);
-            itemsRight.setPrefSize(250,350);
+            itemsLeft.setPrefSize(250, 350);
+            itemsRight.setPrefSize(250, 350);
 
-
-            //The buttons in a VBox
+            // The buttons in a VBox
             VBox dButtons = new VBox(5);
             dButtons.setAlignment(Pos.CENTER);
             Button dAdd = new Button("Add");
             Button dRemove = new Button("Remove");
             dAdd.setPrefWidth(100);
             dRemove.setPrefWidth(100);
-            dButtons.getChildren().addAll(dAdd,dRemove);
+            dButtons.getChildren().addAll(dAdd, dRemove);
             dAdd.setDisable(true);
             dRemove.setDisable(true);
 
-
-
-            //A HBox with the lists and the buttons
+            // A HBox with the lists and the buttons
             HBox dItems = new HBox(5);
             dItems.setPadding(new Insets(5, 10, 10, 10));
             dItems.setAlignment(Pos.CENTER);
-            dItems.getChildren().addAll(itemsLeft,dButtons,itemsRight);
-
+            dItems.getChildren().addAll(itemsLeft, dButtons, itemsRight);
 
             addRecipients.getDialogPane().setContent(dItems);
             addRecipients.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            //Add and remove button functions
-            dAdd.setOnAction(new EventHandler<ActionEvent>() {              //Custom local event handler (Didn't work otherwise)
+            // Add and remove button functions
+            dAdd.setOnAction(new EventHandler<ActionEvent>() { // Custom local event handler (Didn't work otherwise)
 
                 @Override
-                public void handle(ActionEvent event) {             
-                    
-                            
-                    itemsRight.getItems().addAll(itemsLeft.getSelectionModel().getSelectedItems());     //First adds the items to the second list
-               
-                    itemsLeft.getItems().removeAll(itemsLeft.getSelectionModel().getSelectedItems());    //Then removes them from the first list
+                public void handle(ActionEvent event) {
 
-                    itemsLeft.getSelectionModel().clearSelection();                 //Clears selection 
-                    
+                    itemsRight.getItems().addAll(itemsLeft.getSelectionModel().getSelectedItems()); // First adds the
+                                                                                                    // items to the
+                                                                                                    // second list
+
+                    itemsLeft.getItems().removeAll(itemsLeft.getSelectionModel().getSelectedItems()); // Then removes
+                                                                                                      // them from the
+                                                                                                      // first list
+
+                    itemsLeft.getSelectionModel().clearSelection(); // Clears selection
+
                     dAdd.setDisable(true);
-                    
+
                 }
-                
+
             });
 
-
-            dRemove.setOnAction(new EventHandler<ActionEvent>() {              //Custom local event handler (Didn't work otherwise)
+            dRemove.setOnAction(new EventHandler<ActionEvent>() { // Custom local event handler (Didn't work otherwise)
 
                 @Override
-                public void handle(ActionEvent event1) {            
-                    
-                            
-                    itemsLeft.getItems().addAll(itemsRight.getSelectionModel().getSelectedItems());      //First adds the items to the first list    
-           
-                    itemsRight.getItems().removeAll(itemsRight.getSelectionModel().getSelectedItems());  //Then removes them from the second list
-    
-                   
+                public void handle(ActionEvent event1) {
 
-                    itemsRight.getSelectionModel().clearSelection();                 //Clears selection 
-                    
+                    itemsLeft.getItems().addAll(itemsRight.getSelectionModel().getSelectedItems()); // First adds the
+                                                                                                    // items to the
+                                                                                                    // first list
+
+                    itemsRight.getItems().removeAll(itemsRight.getSelectionModel().getSelectedItems()); // Then removes
+                                                                                                        // them from the
+                                                                                                        // second list
+
+                    itemsRight.getSelectionModel().clearSelection(); // Clears selection
+
                     dRemove.setDisable(true);
-                    
+
                 }
-                
+
             });
 
-        
-            //2 list listeners so that if no item is selected the button gets disabled
-            itemsLeft.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<String>() {                     
+            // 2 list listeners so that if no item is selected the button gets disabled
+            itemsLeft.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<String>() {
 
                 @Override
                 public void onChanged(Change<? extends String> c) {
-                    if(c!=null){
+                    if (c != null) {
                         dAdd.setDisable(false);
-                    }
-                    else{
+                    } else {
                         dAdd.setDisable(true);
                     }
-                    
-                }
-                
-            });
 
+                }
+
+            });
 
             itemsRight.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<String>() {
 
                 @Override
                 public void onChanged(Change<? extends String> c) {
-                    if(c!=null){
+                    if (c != null) {
                         dRemove.setDisable(false);
-                    }
-                    else{
+                    } else {
                         dRemove.setDisable(true);
                     }
-                    
+
                 }
-                
+
             });
-
-
 
             addRecipients.setResultConverter((button) -> {
                 // Αν πατηθεί το OK, επιστρέφουμε την αριθμητική τιμή (εφόσον είναι δυνατό)
                 if (button == ButtonType.OK) {
                     try {
                         return listToString(itemsRight.getItems());
-                    }
-                    catch (NumberFormatException ex) {
+                    } catch (NumberFormatException ex) {
                         return null;
                     }
                 }
-                // Σε διαφορετική περίπτωση (Cancel ή κλείσιμο) επιστρέφουμε null, που αντιστοιχεί σε απουσία αποτελέσματος στο Optional<>
+                // Σε διαφορετική περίπτωση (Cancel ή κλείσιμο) επιστρέφουμε null, που
+                // αντιστοιχεί σε απουσία αποτελέσματος στο Optional<>
                 else {
                     return null;
                 }
             });
 
-
-
             Optional<String> result = addRecipients.showAndWait();
             if (result.isPresent()) {
                 numbers.setText(result.get());
             }
-            
-
-
-
-
-            
-
-
 
         });
 
-        
-        
+        sendButton.setOnAction((e) -> {
 
+            if (numbers.getText().isEmpty()) {
+                Alert alert = new Alert(AlertType.INFORMATION);
 
+                alert.setTitle("Error");
+                alert.setContentText("There are no receivers for this message. Please add a receiver.");
+                alert.setHeaderText("Receivers not found");
 
+                alert.initModality(Modality.WINDOW_MODAL);
 
+                alert.initOwner(stage);
 
+                alert.initStyle(StageStyle.DECORATED);
 
+                alert.show();
+            }
+        });
 
-
-
-
-
-
-
-
-
-        //The VBox containing all the items
+        // The VBox containing all the items
         VBox pane = new VBox(5);
-        
-        
-        
+
         pane.setPadding(new Insets(5));
-        pane.getChildren().addAll(top,message,sendButton,labelBox);
-
-
-
-
+        pane.getChildren().addAll(top, message, sendButton, labelBox);
 
         var scene = new Scene(pane, 600, 480);
         stage.setScene(scene);
@@ -316,90 +250,56 @@ private int maxCharacters = 160;
         launch(args);
     }
 
+    public ObservableList<String> randomPhones(ObservableList<String> list) { // A function that generates random phone
+                                                                              // numbers
 
-
-
-
-
-
-
-
-    public ObservableList<String> randomPhones(ObservableList<String> list){            //A function that generates random phone numbers
-
-        for(int i=0;i<50;i++){
+        for (int i = 0; i < 50; i++) {
             String phone = "69";
 
-            for(int j=0;j<8;j++){
-                int num = (int)(Math.random()*10);
+            for (int j = 0; j < 8; j++) {
+                int num = (int) (Math.random() * 10);
                 phone += num;
             }
-
 
             list.add(phone);
 
         }
 
-
-
         return list;
     }
 
-
-
-    public String listToString(ObservableList<String> list){                            //Takes a list of numbers and converts it to a string ;number;number;
+    public String listToString(ObservableList<String> list) { // Takes a list of numbers and converts it to a string
+                                                              // ;number;number;
         String numbers = "";
-        int i=1; //a counter to determine the last item
+        int i = 1; // a counter to determine the last item
         for (String item : list) {
-            if(i<list.size()){
+            if (i < list.size()) {
                 numbers += item + ";";
-            }
-            else{
-                numbers += item ;
+            } else {
+                numbers += item;
             }
             i++;
-            
-        }
 
+        }
 
         return numbers;
     }
 
-
-
-    public ObservableList<String> stringToList(String phones){            //A function that takes a string and extracts phones to a list
+    public ObservableList<String> stringToList(String phones) { // A function that takes a string and extracts phones to
+                                                                // a list
         ObservableList<String> list = FXCollections.observableArrayList();
         String[] array;
 
         array = phones.split(";");
-        
-        for(String phone: array){
-            if(!phone.isBlank()){
+
+        for (String phone : array) {
+            if (!phone.isBlank()) {
                 list.add(phone);
             }
 
         }
 
-
-
         return list;
     }
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
