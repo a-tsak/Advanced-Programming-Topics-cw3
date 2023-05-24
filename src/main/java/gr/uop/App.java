@@ -38,7 +38,7 @@ import javafx.stage.StageStyle;
  * JavaFX App
  */
 public class App extends Application {
-    private int maxCharacters = 160;
+    int maxCharacters = 160;
 
     @Override
     public void start(Stage stage) {
@@ -181,30 +181,7 @@ public class App extends Application {
 
             });
 
-            /*
-             * message.textProperty().addListener(new ChangeListener<String>() {
-             * 
-             * @Override
-             * public void changed(ObservableValue<? extends String> observable, String
-             * oldValue, String newValue) {
-             * 
-             * System.out.println("oldValue: " + oldValue);
-             * System.out.println("newValue: " + newValue);
-             * String text = message.getText();
-             * int chars = text.length();
-             * charcountLabel.setText(Integer.toString(chars));
-             * }
-             * });
-             */
-            /*
-             * /*
-             * message.addEventHandler(KeyEvent.KEY_TYPED, event -> {
-             * 
-             * String text = message.getText();
-             * int chars = text.length();
-             * charcountLabel.setText(Integer.toString(chars));
-             * });
-             */
+            
 
             addRecipients.setResultConverter((button) -> {
                 // Αν πατηθεί το OK, επιστρέφουμε την αριθμητική τιμή (εφόσον είναι δυνατό)
@@ -236,10 +213,26 @@ public class App extends Application {
 
             if (chars > maxCharacters) {
                 maxCharacters += 160;
-                maxcharLabel.setText("/" + Integer.toString(maxCharacters)); // Maximum characters label changes number
-                                                                             // from
-                                                                             // 160 to 320, to 480, etc
+
+
+                maxcharLabel.setText("/" + Integer.toString(maxCharacters)+ " (" + maxCharacters/160 + " SMS)"); // Maximum characters label changes number from 160 to 320, to 480, etc
+                
+                                                                                       
             }
+            else if ( maxCharacters/chars >1 ){
+                if(maxCharacters>160){
+                    maxCharacters -= 160;
+                    
+                    maxcharLabel.setText("/" + Integer.toString(maxCharacters)+ " (" + maxCharacters/160 + " SMS)");
+                    if(maxCharacters==160){
+                        maxcharLabel.setText("/" + Integer.toString(maxCharacters));
+                    }
+                }
+                
+                
+               
+            }
+            
         });
 
         sendButton.setOnAction((e) -> {
@@ -311,6 +304,45 @@ public class App extends Application {
             }
 
         });
+
+
+        stage.setOnCloseRequest((e)->{
+            if(!message.getText().isEmpty()){
+                Alert alert = new Alert(AlertType.INFORMATION);
+
+                    alert.setTitle("Exit");
+                    alert.setHeaderText("Message won't be sent!");
+                    alert.setContentText("Your message isn't sent. Are you sure you want to quit?");
+
+                    alert.initModality(Modality.WINDOW_MODAL);
+
+                    alert.initOwner(stage);
+
+                    alert.initStyle(StageStyle.DECORATED);
+
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ButtonType.OK) {
+                        stage.close();
+                    }
+                    else{
+                        return;
+                    }
+            }
+
+
+
+
+
+        });
+
+
+
+
+
+
+
+
+
 
         // The VBox containing all the items
         VBox pane = new VBox(5);
