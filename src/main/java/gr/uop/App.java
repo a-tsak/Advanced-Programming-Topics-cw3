@@ -264,6 +264,26 @@ public class App extends Application {
                 }
             }
 
+            else {
+                Alert alert = new Alert(AlertType.INFORMATION);
+
+                alert.setTitle("Information");
+                alert.setHeaderText("Sending message");
+                alert.setContentText("The message will be sent after you press OK.");
+
+                alert.initModality(Modality.WINDOW_MODAL);
+
+                alert.initOwner(stage);
+
+                alert.initStyle(StageStyle.DECORATED);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    System.out.println("Ok");
+                }
+
+            }
+
         });
 
         // The VBox containing all the items
