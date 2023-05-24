@@ -181,6 +181,20 @@ public class App extends Application {
 
             });
 
+            itemsRight.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<String>() {
+
+                @Override
+                public void onChanged(Change<? extends String> c) {
+                    if (c != null) {
+                        dRemove.setDisable(false);
+                    } else {
+                        dRemove.setDisable(true);
+                    }
+
+                }
+
+            });
+
             
 
             addRecipients.setResultConverter((button) -> {
