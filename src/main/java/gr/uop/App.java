@@ -231,10 +231,14 @@ public class App extends Application {
 
                 alert.initStyle(StageStyle.DECORATED);
 
-                alert.show();
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    System.out.println("Ok");
+                }
+
             }
 
-            if (message.getText().isEmpty()) {
+            else if (message.getText().isEmpty()) {
                 Alert alert = new Alert(AlertType.CONFIRMATION);
 
                 alert.setTitle("Confirmation");
