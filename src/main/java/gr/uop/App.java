@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javafx.application.Application;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -23,6 +24,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -179,19 +181,30 @@ public class App extends Application {
 
             });
 
-            itemsRight.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<String>() {
-
-                @Override
-                public void onChanged(Change<? extends String> c) {
-                    if (c != null) {
-                        dRemove.setDisable(false);
-                    } else {
-                        dRemove.setDisable(true);
-                    }
-
-                }
-
-            });
+            /*
+             * message.textProperty().addListener(new ChangeListener<String>() {
+             * 
+             * @Override
+             * public void changed(ObservableValue<? extends String> observable, String
+             * oldValue, String newValue) {
+             * 
+             * System.out.println("oldValue: " + oldValue);
+             * System.out.println("newValue: " + newValue);
+             * String text = message.getText();
+             * int chars = text.length();
+             * charcountLabel.setText(Integer.toString(chars));
+             * }
+             * });
+             */
+            /*
+             * /*
+             * message.addEventHandler(KeyEvent.KEY_TYPED, event -> {
+             * 
+             * String text = message.getText();
+             * int chars = text.length();
+             * charcountLabel.setText(Integer.toString(chars));
+             * });
+             */
 
             addRecipients.setResultConverter((button) -> {
                 // Αν πατηθεί το OK, επιστρέφουμε την αριθμητική τιμή (εφόσον είναι δυνατό)
@@ -214,6 +227,19 @@ public class App extends Application {
                 numbers.setText(result.get());
             }
 
+        });
+
+        message.textProperty().addListener((observable, oldValue, newValue) -> {
+            String text = message.getText();
+            int chars = text.length();
+            charcountLabel.setText(Integer.toString(chars));
+
+            if (chars > maxCharacters) {
+                maxCharacters += 160;
+                maxcharLabel.setText("/" + Integer.toString(maxCharacters)); // Maximum characters label changes number
+                                                                             // from
+                                                                             // 160 to 320, to 480, etc
+            }
         });
 
         sendButton.setOnAction((e) -> {
